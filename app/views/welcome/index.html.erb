@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head></head>
+
+<body>
+
+
+<div class="page-header">
+  <h2><center>TwitterMap<br><small>Click anywhere on the map and get the current trends and tweets!<br>
+  <a href="https://github.com/shantanujain/twittertrending">Github</a></small></center></h2>
+</div>
+<div class="text-center"> 
+<button type="button" class="btn btn-default"><center><%= link_to "Locations for which data is available", "/available/index" %></center></button>
+</div>
+<br>
+<br>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKMGG6l9a7q-YGDufOQver7TVrcYvazOA&sensor=false"></script>
+<style type="text/css">
+.eventtext {width:100%; margin-top:20px; font:10pt Arial; text-align:left; line-height:25px; background-color:#EDF4F8;
+padding:5px; border:1px dashed #C2DAE7;}
+#mapdiv {width:100%; height:300px; border:5px solid #DEEBF2;}
+ul {font:10pt arial; margin-left:0px; padding:5px;}
+li {margin-left:0px; padding:5px; list-style-type:decimal;}
+.small {font:9pt arial; color:gray; padding:2px; }
+#latlongclicked {width:300px; border:1px inset gray;}
+</style>
+
+
+<script type="text/javascript">
+  var myurl2 = "/available/index"
+  var available_places = [];
+  
+  /*$(document).ready(function(){
+    $.ajax({
+        url: myurl2,
+        success: function(data){
+          // document.getElementById("available").innerHTML = data;
+          var mydata1 = String(data);
+          available_places = mydata1.split("hah");
+          var myString = available_places[1];
+          available_places = myString.split(",");
+          available_places.splice(0,1);
+          available_places.splice(-1,1);
+          //console.log(available_places);
+          //addMarkers();
+          document.getElementById("available").innerHTML = available_places;
+        }
+      });
+      
+  });*/
+  
+  
+  
+  var map;
+  var lat;
+  var long;
+  var lat1;
+  var long1;
+  
+  var mylist= [];
+  var namename;
+  function mapa()
+  {
+    var opts = {'center': new google.maps.LatLng(0, 0), 'zoom':2, 'mapTypeId': google.maps.MapTypeId.ROADMAP }
+    map = new google.maps.Map(document.getElementById('mapdiv'),opts);
+    var i = 0;
+    //addMarkers()
+    
+    
+    google.maps.event.addListener(map,'click',function(event) {
+      lat = event.latLng.lat();
+      long = event.latLng.lng();
+      document.getElementById('latlongclicked').value = lat + ', ' + long;
+       
+      // window.open("articles/new?param1="+lat+"&param2="+long);
+      var myurl = "/articles/new?param1="+lat+"&param2="+long
+      var myurl1 = "https://api.twitter.com/1.1/trends/available.json"
+       
+      //console.log(myurl);
+       
+      $.ajax({
+        url: myurl,
+  		  success: function(data){
+  	      //document.getElementById("trends").innerHTML = data1;
+  	      //console.log(data);
+  	      var mydata = String(data);
+          mylist = mydata.split("hah");
+          var myString = mylist[1];
+          var stream = [];
+          var myString1 = mylist[2];
+          mylist = myString.split(",");
+          mylist.splice(-1,1);
+          namename = mylist[0];
+          mylist.splice(0,1);
+          stream = myString1.split(",");
+          console.log(mylist);
+  						// alert(data);
+  				//marker();
+  				stream.splice(-1,1);
+  				console.log(stream);
+  				var kk = "";
+  				for(i = 0; i < stream.length; i++){
+            var list = stream[i];
+            //console.log(stream[i]);
+            kk += "<li>"+list+"</li>";
+  				}
+  				marker();
+  				document.getElementById("streamname").innerHTML = namename;
+  				document.getElementById("stream").innerHTML = kk;
+  				//$(document).getElementById("available").style.visibility = "visible";
+  		  }
+      });
+      //var list = ['abc', 'def'];
+      //console.log(mylist[2]);
+      //marker();
+     
+     
+  		
+  					
+      
+    });
+    //marker();
+    
+    
+  
+  
+    google.maps.event.addListener(map,'mousemove',function(event) {
+      lat1 = event.latLng.lat();
+      long1 = event.latLng.lng();
+      document.getElementById('latspan').innerHTML = event.latLng.lat()
+      document.getElementById('lngspan').innerHTML = event.latLng.lng()
+      document.getElementById('latlong').innerHTML = event.latLng.lat() + ', ' + event.latLng.lng()
+      //window.open("articles/new?param1="+lat+"&param2="+long)
+    });
+    
+  }
+  function marker() {
+  var contentString = '<p>'+String(namename)+'<br>'+String(mylist)+'</p>';
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+
+        var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(lat, long),
+          map: map,
+          title: ''
+        });
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
+        
+        var i;
+      /*for(i = 0; i < available_places.length; i++)
+      {
+        
+        console.log(i);
+        var geocoder =  new google.maps.Geocoder();
+        geocoder.geocode( { 'address': available_places[i].to_s}, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            var lat = results[0].geometry.location.lat();
+            var long = results[0].geometry.location.lng(); 
+          } 
+        });
+        var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(lat, long),
+          map: map,
+          title: ''
+        });
+      }*/
+  }
+  
+  function addMarkers() {
+      var i;
+      for(i = 0; i < available_places.length; i++)
+      {
+        
+        console.log(available_places[i].to_s);
+        var geocoder =  new google.maps.Geocoder();
+        geocoder.geocode( { 'address': available_places[i].to_s}, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            var lat = results[0].geometry.location.lat();
+            var long = results[0].geometry.location.lng(); 
+          } 
+          else {
+            alert("a");
+          }
+        });
+        var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(lat, long),
+          map: map,
+          title: ''
+        });
+      }
+        
+  }
+  
+  
+  
+  
+    
+    
+</script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<div>
+<div id="mapdiv"></div>
+<div class="eventtext">
+<div>Lattitude: <span id="latspan"></span></div>
+
+<div>Longitude: <span id="lngspan"></span></div>
+<div>Latitude Longitude: <span id="latlong"></span></div>
+<div>Latitude Longitude on click: 
+  <input type="text" id="latlongclicked">
+</div>
+</div>
+</div>
+
+
+
+<div id="available">
+<div class="page-header">
+  <h3><center>Tweet Stream<br></center></h3>
+  <center><h5 id = "streamname"></h5></center>
+  <center>
+<ul id="stream">
+</ul>
+</center>
+</center>
+</div>
+</div>
+<br>
+
+  
+</div>
+<script>mapa()
+//addMarkers()</script>
+</body>
+
+</html>
+    
