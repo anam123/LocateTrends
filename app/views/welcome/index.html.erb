@@ -6,11 +6,10 @@
 
 
 <div class="page-header">
-  <h2><center>TwitterMap<br><small>Click anywhere on the map and get the current trends and tweets!<br>
-  <a href="https://github.com/shantanujain/twittertrending">Github</a></small></center></h2>
+  <h1 style="font-family:Roboto"><center>LocateTrends<br><small>Click anywhere on the map and get the current trends and tweets!<br>
 </div>
 <div class="text-center"> 
-<button type="button" class="btn btn-default"><center><%= link_to "Locations for which data is available", "/available/index" %></center></button>
+<button type="button" class="btn btn-default"><center><%= link_to "Locations Available", "/available/index" %></center></button>
 </div>
 <br>
 <br>
@@ -26,13 +25,13 @@
 
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKMGG6l9a7q-YGDufOQver7TVrcYvazOA&sensor=false"></script>
 <style type="text/css">
-.eventtext {width:100%; margin-top:20px; font:10pt Arial; text-align:left; line-height:25px; background-color:#EDF4F8;
-padding:5px; border:1px dashed #C2DAE7;}
-#mapdiv {width:100%; height:300px; border:5px solid #DEEBF2;}
-ul {font:10pt arial; margin-left:0px; padding:5px;}
-li {margin-left:0px; padding:5px; list-style-type:decimal;}
-.small {font:9pt arial; color:gray; padding:2px; }
-#latlongclicked {width:300px; border:1px inset gray;}
+.eventtext {width:100%; margin-top:20px; font:13pt Roboto; text-align:center; line-height:25px; background-color:#000000;
+padding:10px; border:1px dashed #000000;color: #ffffff}
+#mapdiv {width:100%; height:300px; border:10px solid #ffffff;}
+ul {font:10pt Roboto; margin-left:0px; padding:5px;}
+li {margin-left:0px; padding:5px; list-style-type:square;}
+.small {font:9pt Roboto; color:white; padding:2px; }
+#latlongclicked {width:300px; border:1px inset white;}
 </style>
 
 
@@ -137,9 +136,7 @@ li {margin-left:0px; padding:5px; list-style-type:decimal;}
     google.maps.event.addListener(map,'mousemove',function(event) {
       lat1 = event.latLng.lat();
       long1 = event.latLng.lng();
-      document.getElementById('latspan').innerHTML = event.latLng.lat()
-      document.getElementById('lngspan').innerHTML = event.latLng.lng()
-      document.getElementById('latlong').innerHTML = event.latLng.lat() + ', ' + event.latLng.lng()
+      document.getElementById('latlong').innerHTML = event.latLng.lat() + ' | ' + event.latLng.lng()
       //window.open("articles/new?param1="+lat+"&param2="+long)
     });
     
@@ -217,12 +214,10 @@ li {margin-left:0px; padding:5px; list-style-type:decimal;}
 <div>
 <div id="mapdiv"></div>
 <div class="eventtext">
-<div>Lattitude: <span id="latspan"></span></div>
-
-<div>Longitude: <span id="lngspan"></span></div>
-<div>Latitude Longitude: <span id="latlong"></span></div>
+<div>Latitude | Longitude: <span id="latlong"></span></div>
+<br>
 <div>Latitude Longitude on click: 
-  <input type="text" id="latlongclicked">
+  <input type="text" id="latlongclicked" style="color:#000000">
 </div>
 </div>
 </div>
@@ -231,7 +226,7 @@ li {margin-left:0px; padding:5px; list-style-type:decimal;}
 
 <div id="available">
 <div class="page-header">
-  <h3><center>Tweet Stream<br></center></h3>
+  <h3><center>Trending Tweets<br></center></h3>
   <center><h5 id = "streamname"></h5></center>
   <center>
 <ul id="stream">
